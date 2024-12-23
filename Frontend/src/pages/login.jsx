@@ -7,6 +7,7 @@ const LoginPage = () => {
   
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,6 +19,7 @@ const LoginPage = () => {
   const login = async (e) => {
     e.preventDefault()
     try {
+      setIsLoading(true);
       const response = await api.post("/login", formData);
 
       if(response.status)
@@ -31,7 +33,11 @@ const LoginPage = () => {
       
       if(error.status === 404) 
         alert("Incorrect email");
-      
+      else
+        alert("Server is down. Please try again later."); 
+    }
+    finally{
+      setIsLoading(false);
     }
   }
 
@@ -72,9 +78,9 @@ const LoginPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-2 text-white font-semibold rounded-lg hover:bg-violet-400 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-200"
+            className="w-full py-2 text-white font-semibold rounded-lg hover:bg-violet-400 focus:outline-none focus:ring-2 focus:ring-purple-400 active:ring-purple-400 transition-all duration-200"
           >
-            Login
+            {isLoading?<Loader/>:"Login"}
           </button>
         </form>
         <p className="text-center text-purple-400 text-md pb-2 mt-4">
@@ -84,5 +90,13 @@ const LoginPage = () => {
     </div>
   );
 };
+
+const Loader = () => {
+  return (
+    <div className="flex items-center justify-center">
+      <div className="w-6 h-6 border-4 border-transparent text-violet-400 text-3xl animate-spin flex items-center justify-center border-t-purple-500 rounded-full"></div>
+    </div>
+  );
+}
 
 export default LoginPage;
