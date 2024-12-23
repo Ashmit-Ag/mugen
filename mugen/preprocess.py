@@ -7,7 +7,7 @@ import tensorflow.keras as keras
 KERN_DATASET_PATH = "deutschl/boehme"
 SAVE_DIR = "dataset"
 SINGLE_FILE_DATASET = "file_dataset"
-MAPPING_PATH = "mapping.json"
+MAPPING_PATH = "mugen/mapping.json"
 SEQUENCE_LENGTH = 128
 SONGS_LIMITER = 20
 

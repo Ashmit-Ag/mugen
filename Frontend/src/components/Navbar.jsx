@@ -8,6 +8,11 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("audioSrc");
+  }
+
   return (
     <nav className="fixed top-0 left-0 w-full flex items-center justify-between p-4 py-6 px-6 sm:px-14 bg-transparent z-10">
       {/* Logo */}
@@ -48,7 +53,7 @@ const Navbar = () => {
           My Tracks
         </NavLink>
         <NavLink to="/login">
-          <button className="text-purple-900 bg-white rounded-full py-2 px-4 text-md font-semibold hover:bg-opacity-75 transition-all duration-150">
+          <button onClick={logout} className="text-purple-900 bg-white rounded-full py-2 px-4 text-md font-semibold hover:bg-opacity-75 transition-all duration-150">
             Logout
           </button>
         </NavLink>

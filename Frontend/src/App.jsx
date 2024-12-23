@@ -15,7 +15,7 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        {/* <Route path="/" element={<DashboardPage />} /> */}
+        <Route path="/" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/generate" element={<GeneratePage />} />
         <Route path="/mymusic" element={<MyMusicPage />} />
@@ -29,7 +29,7 @@ const ConditionalNavbar = () => {
   const location = useLocation();
 
   // Hide Navbar on login and signup pages
-  const hideNavbarPaths = ["/login", "/signup"];
+  const hideNavbarPaths = ["/login", "/signup", "/"];
   if (hideNavbarPaths.includes(location.pathname)) {
     return null;
   }

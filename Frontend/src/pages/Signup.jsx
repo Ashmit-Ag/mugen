@@ -1,16 +1,16 @@
 import { useState } from "react";
 import './pages.css';
 import api from "../api";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
+  const navigate = useNavigate();
+
+  const [cpassword, setCpassword] = useState("");
   const [formData, setFormData] = useState({
-    username:"",
     email: "",
     password: "",
-    phone: "",
-    age: ""
   });
-  const [cpassword, setCpassword] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -22,21 +22,15 @@ const SignupPage = () => {
       alert("Passwords do not match");
       return;
     }
-    if (isNaN(formData.age) || formData.age <= 0 || formData.age > 99) {
-      alert("Please enter a valid age");
-      return;
-    }
-    if(formData.phone.length !== 10) {
-      alert("Please enter a valid phone number");
-      return;
-    }
     try {
       const response = await api.post("/register", formData);
       if(response.data.error) {
         alert(response.data.error);
         return
       }
-      alert("User signed up successfully:", response.data);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      navigate("/dashboard");
+      // alert("User signed up successfully:", response.data);
     } catch (error) {
       console.error("Error signing up:", error);
     }
@@ -47,33 +41,19 @@ const SignupPage = () => {
       <div className="bg-opacity-0 backdrop-blur-xl p-8 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-3xl font-bold text-center text-purple-300 mb-6">Signup</h1>
         <form onSubmit={handleSubmit}>
-        <div className="mb-6">
-            <label htmlFor="email" className="block text-purple-300 text-md pb-2 font-semibold mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-[90%] ml-4 py-3 text-white border-b-2 border-gray-100 border-opacity-30 backdrop-blur-2xl bg-transparent focus:outline-none focus:border-opacity-100 bg-opacity-10"
-              placeholder="Enter your email"
-            />
-          </div>
           <div className="mb-6">
-            <label htmlFor="username" className="block text-purple-300 text-md pb-2 font-semibold mb-1">
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-              className="w-[90%] ml-4 py-3 text-white border-b-2 border-gray-100 border-opacity-30 backdrop-blur-2xl bg-transparent focus:outline-none focus:border-opacity-100 bg-opacity-10"
-              placeholder="Enter your email"
-            />
+              <label htmlFor="email" className="block text-purple-300 text-md pb-2 font-semibold mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-[90%] ml-4 py-3 text-white border-b-2 border-gray-100 border-opacity-30 backdrop-blur-2xl bg-transparent focus:outline-none focus:border-opacity-100 bg-opacity-10"
+                placeholder="Enter your email"
+              />
           </div>
           <div className="mb-6">
             <label htmlFor="password" className="block text-purple-300 text-md pb-2 font-semibold mb-1">
@@ -101,34 +81,6 @@ const SignupPage = () => {
               required
               className="w-[90%] ml-4 py-3 text-white border-b-2 border-gray-100 border-opacity-30 backdrop-blur-2xl bg-transparent focus:outline-none focus:border-opacity-100 bg-opacity-10"
               placeholder="Confirm your password"
-            />
-          </div>
-          <div className="mb-6">
-            <label htmlFor="phone" className="block text-purple-300 text-md pb-2 font-semibold mb-1">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              className="w-[90%] ml-4 py-3 text-white border-b-2 border-gray-100 border-opacity-30 backdrop-blur-2xl bg-transparent focus:outline-none focus:border-opacity-100 bg-opacity-10"
-              placeholder="Enter your phone number"
-            />
-          </div>
-          <div className="mb-6">
-            <label htmlFor="age" className="block text-purple-300 text-md pb-2 font-semibold mb-1">
-              Age
-            </label>
-            <input
-              type="number"
-              id="age"
-              value={formData.age}
-              onChange={handleChange}
-              required
-              className="w-[90%] ml-4 py-3 text-white border-b-2 border-gray-100 border-opacity-30 backdrop-blur-2xl bg-transparent focus:outline-none focus:border-opacity-100 bg-opacity-10"
-              placeholder="Enter your age"
             />
           </div>
           <button

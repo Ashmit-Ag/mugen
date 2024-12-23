@@ -2,6 +2,10 @@ import json
 import numpy as np
 import tensorflow.keras as keras
 import music21 as m21
+from pydub import AudioSegment
+from midi2audio import FluidSynth
+import os
+
 from mugen.preprocess import SEQUENCE_LENGTH, MAPPING_PATH
 import sys 
 
@@ -15,7 +19,7 @@ class MelodyGenerator:
     def __init__(self, model_number = 1):
         self.model_number = model_number
         
-        model_path = f"model{model_number}.h5"
+        model_path = f"mugen/model{model_number}.h5"
         try:
             self.model = keras.models.load_model(model_path)
         except ValueError as e:
@@ -95,7 +99,7 @@ class MelodyGenerator:
         return index
 
 
-    def save_melody(self, melody, step_duration=0.25, format="midi"):
+    def save_melody(self, melody, midi_path, step_duration=0.25, format="midi"):
         """Converts a melody into a MIDI file
 
         :param melody (list of str):
@@ -104,7 +108,7 @@ class MelodyGenerator:
         :return:
         """
 
-        file_name = f"model {self.model_number} mel 1.mid"
+        file_name = midi_path
         stream = m21.stream.Stream()
 
         start_symbol = None
@@ -136,11 +140,20 @@ class MelodyGenerator:
         stream.write(format, file_name)
 
 
-if __name__ == "__main__":
-    mg = MelodyGenerator(model_number = 4)
-    seed1 = "67 _ 67 _ 67 _ _ 65 64 _ 64 _ 64 _ _ "
-    seed2 = "67 _ _ _ _ _ 65 _ 64 _ 62 _ 60 _ _ _"
-    seed3 = "55 _ _ 48 _ 61 _ 50 _ 52 _ r _ _ _"
-    melody = mg.generate_melody(seed1, 60, SEQUENCE_LENGTH, 0.3)
-    print(melody)
-    mg.save_melody(melody)
+# if __name__ == "__main__":
+    # mg = MelodyGenerator(model_number = 4)
+    # seed1 = "67 _ 67 _ 67 _ _ 65 64 _ 64 _ 64 _ _ "
+    # seed2 = "67 _ _ _ _ _ 65 _ 64 _ 62 _ 60 _ _ _"
+    # seed3 = "55 _ _ 48 _ 61 _ 50 _ 52 _ r _ _ _"
+    # melody = mg.generate_melody(seed1, 60, SEQUENCE_LENGTH, 0.3)
+    # print(melody)
+    # mg.save_melody(melody, "mugen/melody.mid")
+
+    # fs = FluidSynth('mugen/SalC5Light2.sf2')
+    # fs.midi_to_audio("mugen/melody.mid", "mugen/melody.wav")
+
+    # audio = AudioSegment.from_wav("mugen/melody.wav")
+    # audio.export("mugen/melody.mp3", format="mp3")
+
+    # os.remove("melody.mid")
+    # os.remove("melody.wav")

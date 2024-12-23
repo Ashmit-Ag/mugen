@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const MyMusicPage = () => {
   const tracks = [
@@ -17,8 +18,19 @@ const MyMusicPage = () => {
       audioUrl: "track2.mp3",
     },
   ];
-  
-  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(localStorage.getItem("user") === null) {
+      navigate("/login");
+    }
+  })
+
+  if(localStorage.getItem("user") === null) {
+    return null;
+  }
+  else
+  {
   return (
     <div className="homeBackgroundImage min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
       <h1 className="tsm:text-6xl md:text-6xl lg:text-7xl text-5xl font-bold mb-8">My Music</h1>
@@ -48,6 +60,7 @@ const MyMusicPage = () => {
       </div>
     </div>
   );
+}
 };
 
 export default MyMusicPage;

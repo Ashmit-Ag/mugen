@@ -1,19 +1,37 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import api from "../api";
 import './pages.css';
 
 const LoginPage = () => {
+  
+  const navigate = useNavigate();
 
-  const [data, setData] = useState([]);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
-  const login = async () => {
+  const login = async (e) => {
+    e.preventDefault()
     try {
-      const response = await api.post("/login", {});
-      console.log(response.data);
+      const response = await api.post("/login", formData);
+
+      if(response.status)
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      navigate("/dashboard");
     }
     catch (error) {
       console.error(error);
+      if(error.status === 401) 
+        alert("Incorrect password");
+      
+      if(error.status === 404) 
+        alert("Incorrect email");
+      
     }
   }
 
@@ -23,7 +41,7 @@ const LoginPage = () => {
     >
       <div className=" bg-opacity-0 backdrop-blur-xl p-8 rounded-lg shadow-lg sm:w-full max-w-md w-[95%]">
         <h1 className="text-3xl font-bold text-center text-purple-300 mb-6">Login</h1>
-        <form>
+        <form onSubmit={login}>
           <div className="mb-6">
             <label htmlFor="email" className="block text-purple-300 text-md pb-2 font-semibold mb-1">
               Email
@@ -32,6 +50,8 @@ const LoginPage = () => {
               type="email"
               id="email"
               required
+              value={formData.email}
+              onChange={handleChange}
               className="w-[90%] ml-4 py-3 text-white border-b-2 border-gray-100 border-opacity-30 backdrop-blur-2xl bg-transparent focus:outline-none focus:border-opacity-100 bg-opacity-10"
               placeholder="Enter your email"
             />
@@ -44,6 +64,8 @@ const LoginPage = () => {
               type="password"
               id="password"
               required
+              value={formData.password}
+              onChange={handleChange}
               className="w-[90%] ml-4 py-3 text-white border-b-2 border-gray-100 border-opacity-30 backdrop-blur-2xl bg-transparent focus:outline-none focus:border-opacity-100 bg-opacity-10"
               placeholder="Enter your password"
             />
